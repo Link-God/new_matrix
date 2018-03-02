@@ -13,6 +13,7 @@ class matrix_t {
 
 public:
 	matrix_t() {
+		data = nullptr;
 		str = 0;
 		col = 0;
 	}
