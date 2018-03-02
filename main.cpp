@@ -18,23 +18,69 @@ public:
 		col = 0;
 	}
 
-	matrix_t add(matrix_t & other) {
-		if (this->str == other.str && this->col == other.col) {
-			for (unsigned int i = 0; i < this->str; i++) {
-				for (unsigned int j = 0; j < this->col; j++) {
-					this->data[i][j] += other.data[i][j];
-				}
+	matrix_t(matrix_t const & other) {
+		this->str = other.str;
+		this->col = other.col;
+		this->data = new int *[this->str];
+		for (unsigned int i = 0; i < this->str; i++) {
+			data[i] = new int[this->col];
+			for (unsigned int j = 0; j < this->col; j++) {
+				this->data[i][j] = other.data[i][j];
 			}
+		}
+	}
+
+	matrix_t & operator =(matrix_t const & other) {
+		for (unsigned int i = 0; i < str; ++i) {
+			delete[] this->data[i];
+		}
+		delete[] this->data;
+
+		this->str = other.str;
+		this->col = other.col;
+		this->data = new int *[str];
+		for (unsigned int i = 0; i < this->str; i++) {
+			this->data[i] = new int[this->col];
+			for (unsigned int j = 0; j < this->col; j++) {
+				this->data[i][j] = other.data[i][j];
+			}
+		}
+		return *this;
+	}
+
+	matrix_t add(matrix_t & other) {
+		matrix_t result;
+
+		if (this->str == other.str && this->col == other.col) {
+				result.data = new int *[this->str];
+				for (unsigned int j = 0; j < this->str; j++) {
+					result.data[j] = new int[this->col];
+				}
+				result.str = this->str;
+				result.col = this->col;
+				for (unsigned int i = 0;i < this->str; i++) {
+					for (unsigned int j = 0; j < this->col; j++) {
+						result.data[i][j] = this->data[i][j] + other.data[i][j];
+					}
+				}
 		}
 		else {
 			cout << endl << "fail";
 			exit(0);
 		}
-		return *this;
+		return result;
 	}
 
 	matrix_t sub(matrix_t & other) {
+		matrix_t result;
+
 		if (this->str == other.str && this->col == other.col) {
+			result.data = new int *[this->str];
+			for (unsigned int j = 0; j < this->str; j++) {
+				result.data[j] = new int[this->col];
+			}
+			result.str = this->str;
+			result.col = this->col;
 			for (unsigned int i = 0; i < this->str; i++) {
 				for (unsigned int j = 0; j < this->col; j++) {
 					this->data[i][j] -= other.data[i][j];
@@ -45,7 +91,7 @@ public:
 			cout << endl << "fail";
 			exit(0);
 		}
-		return *this;
+		return result;
 	}
 
 	matrix_t mul(matrix_t & other) {
@@ -54,7 +100,7 @@ public:
 			result.str = this->str;
 			result.col = other.col;
 			result.data = new int *[this->str];
-			for (int i = 0; i < this->str; ++i) {
+			for (unsigned int i = 0; i < this->str; ++i) {
 				result.data[i] = new int[other.col];
 			}
 			for (unsigned int i = 0; i < this->str; i++) {
@@ -75,18 +121,20 @@ public:
 	}
 
 	matrix_t trans(matrix_t & other) {
-		this->str = other.col;
-		this->col = other.str;
-		this->data = new int *[other.col];
-		for (unsigned int i = 0; i < this->str; ++i)
-		{
-			this->data[i] = new int [this->col];
-			for (unsigned int j = 0; j < this->col; ++j)
+		matrix_t result;
+		result.str = other.col;
+		result.col = other.str;
+		result.data = new int *[other.col];
+		for (unsigned int i = 0; i < other.col; i++) {
+			result.data[i] = new int[other.str];
+		}
+		for (unsigned int i = 0; i < result.str; ++i){
+			for (unsigned int j = 0; j < result.col; ++j)
 			{
-				this->data[i][j] = other.data[j][i];
+				result.data[i][j] = other.data[j][i];
 			}
 		}
-		return *this;
+		return result;
 	}
 
 	ifstream & read(std::ifstream & fin) {
@@ -122,7 +170,11 @@ public:
 	}
 
 	~matrix_t() {
-
+		for (unsigned int i = 0; i < this->str; i++)
+		{
+			delete[] this->data[i];
+		}
+		delete[] this->data;
 	}
 };
 
