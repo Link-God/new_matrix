@@ -31,7 +31,7 @@ public:
 	}
 
 	matrix_t & operator =(matrix_t const & other) {
-		for (unsigned int i = 0; i < str; ++i) {
+		for (unsigned int i = 0; i < str; i++) {
 			delete[] this->data[i];
 		}
 		delete[] this->data;
