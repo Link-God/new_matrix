@@ -48,7 +48,7 @@ public:
 		return *this;
 	}
 
-	matrix_t add(matrix_t & other) {
+	matrix_t add(matrix_t & other) const {
 		matrix_t result;
 
 		if (this->str == other.str && this->col == other.col) {
@@ -71,19 +71,19 @@ public:
 		return result;
 	}
 
-	matrix_t sub(matrix_t & other) {
+	matrix_t sub(matrix_t & other) const {
 		matrix_t result;
 
 		if (this->str == other.str && this->col == other.col) {
 			result.data = new int *[this->str];
-			for (unsigned int j = 0; j < this->str; j++) {
-				result.data[j] = new int[this->col];
+			for (unsigned int i = 0; i < this->str; i++) {
+				result.data[i] = new int[this->col];
 			}
 			result.str = this->str;
 			result.col = this->col;
 			for (unsigned int i = 0; i < this->str; i++) {
 				for (unsigned int j = 0; j < this->col; j++) {
-					this->data[i][j] -= other.data[i][j];
+					result.data[i][j] = this->data[i][j] - other.data[i][j];
 				}
 			}
 		}
@@ -94,7 +94,7 @@ public:
 		return result;
 	}
 
-	matrix_t mul(matrix_t & other) {
+	matrix_t mul(matrix_t & other) const {
 		matrix_t result;
 		if (this->col == other.str) {
 			result.str = this->str;
@@ -120,7 +120,7 @@ public:
 		return result;
 	}
 
-	matrix_t trans(matrix_t & other) {
+	matrix_t trans(matrix_t & other) const {
 		matrix_t result;
 		result.str = other.col;
 		result.col = other.str;
